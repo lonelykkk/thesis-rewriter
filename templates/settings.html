@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+{% block title %}设置 - 论文降重降AI助手{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <div class="mb-8">
+        <h1 class="text-2xl font-bold text-gray-900">系统设置</h1>
+        <p class="text-sm text-gray-500 mt-1">配置 AI 模型接口与自定义改写 Skill</p>
+    </div>
+
+    <form method="POST" class="space-y-6">
+
+        <!-- ============ 区域一：API 配置 ============ -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 bg-gray-50 border-b border-gray-100">
+                <h2 class="text-base font-semibold text-gray-800">AI 模型配置</h2>
+                <p class="text-xs text-gray-400 mt-0.5">配置 API Key 后系统将使用 AI 引擎改写，否则使用本地引擎</p>
+            </div>
+            <div class="p-6 space-y-5">
+
+                <!-- API Key -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                        API Key
+                        <span class="text-xs text-gray-400 font-normal ml-1">（必填）</span>
+                    </label>
+                    <div class="relative">
+                        <input type="password" id="apiKeyInput" name="api_key" value="{{ api_key }}"
+                               class="w-full px-4 py-2.5 pr-10 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700 placeholder-gray-400"
+                               placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                        <button type="button" id="toggleKeyBtn"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-1.5">支持 DeepSeek、OpenAI 等兼容接口的 API Key</p>
+                </div>
+
+                <!-- API 地址 -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                        API 地址
+                        <span class="text-xs text-gray-400 font-normal ml-1">（可选）</span>
+                    </label>
+                    <input type="text" name="api_base_url" value="{{ api_base_url }}"
+                           class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700 placeholder-gray-400"
+                           placeholder="https://api.deepseek.com/v1">
+                    <p class="text-xs text-gray-400 mt-1.5">留空则使用默认地址</p>
+                </div>
+
+                <!-- 模型名称 -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                        模型名称
+                        <span class="text-xs text-gray-400 font-normal ml-1">（可选）</span>
+                    </label>
+                    <input type="text" name="api_model" value="{{ api_model }}"
+                           class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700 placeholder-gray-400"
+                           placeholder="deepseek-chat">
+                    <p class="text-xs text-gray-400 mt-1.5">留空则使用默认模型</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ============ 区域二：自定义 Skill ============ -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="px-6 py-4 bg-gray-50 border-b border-gray-100">
+                <h2 class="text-base font-semibold text-gray-800">自定义改写 Skill（Prompt）</h2>
+                <p class="text-xs text-gray-400 mt-0.5">
+                    填写后 AI 引擎将<strong class="text-gray-500">优先使用</strong>您自定义的提示词，覆盖系统内置改写策略
+                </p>
+            </div>
+            <div class="p-6 space-y-4">
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                        System Prompt（系统提示词）
+                        <span class="text-xs text-gray-400 font-normal ml-1">（可选）</span>
+                    </label>
+                    <textarea name="custom_skill" rows="10"
+                              class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm text-gray-700 placeholder-gray-400 font-mono leading-relaxed resize-y"
+                              placeholder="你是一位专业的论文改写专家。请对以下文本进行处理...
+
+1. 用更学术化的词汇替换原文
+2. 改变句式结构，避免与原文重复
+3. 保持专业术语不变
+4. 不要改变段落长度和核心论点
+
+请直接输出改写后的结果。">{{ custom_skill_prompt }}</textarea>
+                    <p class="text-xs text-gray-400 mt-1.5">
+                        提示：自定义 prompt 仅在 <strong class="text-gray-500">配置了 API Key</strong> 时生效。系统将把此 prompt 作为 system 消息发送给 AI 模型。
+                    </p>
+                </div>
+
+                <!-- 快捷模板 -->
+                <div>
+                    <span class="text-xs text-gray-400">快捷模板：</span>
+                    <div class="flex flex-wrap gap-2 mt-1.5">
+                        <button type="button" class="skill-template text-xs px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-full hover:bg-indigo-100 transition-colors"
+                                data-target="custom_skill" data-template="deep_rewrite">深度降重</button>
+                        <button type="button" class="skill-template text-xs px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-full hover:bg-indigo-100 transition-colors"
+                                data-target="custom_skill" data-template="deai_focus">专注降AI</button>
+                        <button type="button" class="skill-template text-xs px-3 py-1.5 bg-indigo-50 text-indigo-600 rounded-full hover:bg-indigo-100 transition-colors"
+                                data-target="custom_skill" data-template="polish">学术润色</button>
+                        <button type="button" class="skill-template text-xs px-3 py-1.5 bg-gray-50 text-gray-400 rounded-full hover:bg-gray-100 transition-colors"
+                                onclick="document.getElementsByName('custom_skill')[0].value=''">清空</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ============ 提示信息 ============ -->
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+            <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <div class="text-sm text-amber-700">
+                    <p class="font-medium mb-1">使用说明</p>
+                    <ul class="space-y-1 text-amber-600">
+                        <li>• 有 API Key → 使用 AI 引擎（优先用自定义 Skill prompt）</li>
+                        <li>• 无 API Key + 有自定义 Skill → 本地引擎（自定义 prompt 不生效）</li>
+                        <li>• 无 API Key → 使用内置本地引擎（无需网络）</li>
+                        <li>• 自定义 prompt 中系统会额外添加用户输入文本，可包含 {input} 占位符</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 提交按钮 -->
+        <div class="flex gap-3 pt-2">
+            <button type="submit"
+                    class="flex-1 px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-xl hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-lg shadow-blue-200">
+                保存全部设置
+            </button>
+            <a href="{{ url_for('index') }}"
+               class="px-6 py-2.5 bg-white border border-gray-200 text-gray-600 font-medium rounded-xl hover:bg-gray-50 transition-colors text-center">
+                返回首页
+            </a>
+        </div>
+
+    </form>
+</div>
+
+<script>
+(function () {
+    // 切换 API Key 可见性
+    var toggleBtn = document.getElementById("toggleKeyBtn");
+    var apiInput = document.getElementById("apiKeyInput");
+    if (toggleBtn && apiInput) {
+        toggleBtn.addEventListener("click", function () {
+            var eyeOn  = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>';
+            var eyeOff = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>';
+            if (apiInput.type === "password") {
+                apiInput.type = "text";
+                toggleBtn.innerHTML = eyeOn;
+            } else {
+                apiInput.type = "password";
+                toggleBtn.innerHTML = eyeOff;
+            }
+        });
+    }
+
+    // 快捷模板
+    var TEMPLATES = {
+        deep_rewrite: [
+            "你是一位资深的学术论文降重专家，精通中文论文改写技巧。请严格按以下要求对文本进行降重处理：",
+            "",
+            "1. 【同义词替换】用学术同义词替换原文中的高频词汇，避免与原文重复",
+            "2. 【句式变换】改变原文的句式结构，如将主动句改为被动句、将长句拆分为短句、将短句合并为长句",
+            "3. 【语序调整】在不改变原意的前提下，调整句子成分的语序",
+            "4. 【增删词语】适当添加修饰词或删除冗余表达",
+            "5. 【专业术语保护】保持【算法、模型、神经网络、深度学习】等专业术语不变",
+            "6. 【学术规范】保持引用格式、段落结构和学术严谨性",
+            "",
+            "请直接输出改写后的结果，不要添加任何解释和说明。"
+        ].join("\n"),
+        deai_focus: [
+            "你是一位专业的论文降AI检测专家。请对以下文本进行人性化处理，使其更接近人类写作风格：",
+            "",
+            "1. 【打破规整结构】避免AI偏好的\"首先/其次/最后\"\""第一/第二/第三\"等过于整齐的并列结构",
+            "2. 【添加过渡词】在段落间适当插入\"值得注意的是\"\""从某种程度上说\"\""不可否认\"等自然过渡",
+            "3. 【限定性表达】将绝对的断言改为\"通常\""往往\""一般\"等限定表述",
+            "4. 【研究者视角】适当加入\"本研究认为\"\""笔者发现\"\""通过分析可以看出\"等人称视角",
+            "5. 【适度的不完美】保留一些自然的冗余和连接词变化，避免过于简洁流畅",
+            "6. 【术语准确】保持专业术语和核心论点不变",
+            "",
+            "请直接输出改写后的结果。"
+        ].join("\n"),
+        polish: [
+            "你是一位学术论文润色专家。请对以下文本进行润色处理：",
+            "",
+            "1. 【用词精准】将口语化表达替换为更精准的学术用语",
+            "2. 【逻辑连贯】优化句间逻辑关系，增强论证的连贯性",
+            "3. 【简洁凝练】删除冗余表达，使语言更凝练有力",
+            "4. 【语气客观】保持中文论文应有的客观、严谨的学术语气",
+            "5. 【论证突出】突出研究的方法论意义和创新价值",
+            "6. 【术语统一】确保专业术语全文统一使用",
+            "",
+            "请直接输出润色后的结果。"
+        ].join("\n"),
+    };
+
+    var templateBtns = document.querySelectorAll(".skill-template");
+    for (var i = 0; i < templateBtns.length; i++) {
+        (function (btn) {
+            btn.addEventListener("click", function () {
+                var targetId = this.dataset.target;
+                var templateKey = this.dataset.template;
+                var textarea = document.getElementsByName(targetId)[0];
+                if (textarea && TEMPLATES[templateKey]) {
+                    textarea.value = TEMPLATES[templateKey];
+                    textarea.focus();
+                }
+            });
+        })(templateBtns[i]);
+    }
+})();
+</script>
+{% endblock %}

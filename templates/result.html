@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}处理结果 - 论文降重降AI助手{% endblock %}
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- 结果头部 -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">处理结果</h1>
+            <p class="text-sm text-gray-500 mt-1">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800" id="changeCount">
+                    0 处改动
+                </span>
+            </p>
+        </div>
+        <div class="flex gap-2 flex-wrap">
+            <button id="copyResultBtn" class="px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-xl hover:bg-gray-50 transition-colors text-sm flex items-center space-x-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                </svg>
+                <span>复制结果</span>
+            </button>
+            <button id="exportBtn" class="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors text-sm flex items-center space-x-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span>导出文本</span>
+            </button>
+            <a href="/" class="px-4 py-2 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors text-sm">
+                继续处理
+            </a>
+        </div>
+    </div>
+
+    <!-- 双栏对比 -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <!-- 原文 -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="px-4 py-3 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="w-2 h-2 bg-red-400 rounded-full"></span>
+                    <h2 class="text-sm font-semibold text-gray-700">原文</h2>
+                </div>
+                <span class="text-xs text-gray-400">改写前</span>
+            </div>
+            <div class="p-4">
+                <pre id="originalText" class="text-sm text-gray-600 whitespace-pre-wrap font-sans leading-relaxed">{{ original }}</pre>
+            </div>
+        </div>
+
+        <!-- 改写后 -->
+        <div class="bg-white rounded-xl shadow-sm border border-green-200 overflow-hidden">
+            <div class="px-4 py-3 bg-green-50 border-b border-green-200 flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="w-2 h-2 bg-green-400 rounded-full"></span>
+                    <h2 class="text-sm font-semibold text-green-700">改写后</h2>
+                </div>
+                <span class="text-xs text-green-500">改写后</span>
+            </div>
+            <div class="p-4">
+                <pre id="rewrittenText" class="text-sm text-gray-700 whitespace-pre-wrap font-sans leading-relaxed">{{ rewritten }}</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- 改动详情 -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+        <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+            <h3 class="font-semibold text-gray-800">改动详情</h3>
+            {% if record_id %}
+            <span class="text-xs text-gray-400">记录 #{{ record_id }}</span>
+            {% endif %}
+        </div>
+        <div id="changesList" class="divide-y divide-gray-100 max-h-96 overflow-y-auto">
+            <!-- 动态生成 -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // 将 Jinja 变量传递给 JS
+    var RECORD_DATA = {
+        original: {{ original | tojson }},
+        rewritten: {{ rewritten | tojson }},
+        changes: {{ changes | tojson }},
+        record_id: {{ record_id | tojson }}
+    };
+</script>
+{% endblock %}

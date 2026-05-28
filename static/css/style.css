@@ -1,0 +1,112 @@
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* 加载动画 */
+@keyframes pulse-dot {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+}
+
+/* 输入框聚焦效果 */
+textarea:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* 标签页切换效果 */
+.tab-active {
+    @apply border-blue-600 text-blue-600;
+}
+
+/* 文本高亮效果 */
+.diff-added {
+    background-color: #dcfce7;
+    padding: 1px 2px;
+    border-radius: 2px;
+}
+
+.diff-removed {
+    background-color: #fee2e2;
+    padding: 1px 2px;
+    border-radius: 2px;
+}
+
+/* 统计数字动画 */
+.stat-number {
+    font-variant-numeric: tabular-nums;
+}
+
+/* 按钮悬停效果 */
+.btn-scale:hover {
+    transform: scale(1.02);
+}
+
+.btn-scale:active {
+    transform: scale(0.98);
+}
+
+/* 卡片入场动画 */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card-animate {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+/* 闪烁效果 */
+@keyframes flash-green {
+    0%, 100% { background-color: transparent; }
+    50% { background-color: #dcfce7; }
+}
+
+.flash-change {
+    animation: flash-green 1s ease-in-out 3;
+}
+
+/* 移动端优化 */
+@media (max-width: 640px) {
+    .text-responsive {
+        font-size: 0.875rem;
+    }
+}
+
+/* Flash消息入场动画 */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+    animation: fadeIn 0.35s ease-out;
+}
+
+/* 移动端历史弹窗上滑动画 */
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+}
+.animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+}
