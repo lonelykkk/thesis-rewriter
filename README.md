@@ -3,6 +3,10 @@
 为大学生毕业论文设计的智能降重与降AI检测工具。支持 **本地规则引擎 + AI增强** 双引擎模式，内置用户认证、历史记录管理、自定义改写Skill等完整功能。
 
 ---
+## 界面概览
+<img width="1813" height="906" alt="image" src="https://github.com/user-attachments/assets/ee0883fd-0033-4150-8d4e-85ebae1c961f" />
+<img width="1767" height="923" alt="image" src="https://github.com/user-attachments/assets/50001830-85ef-4138-8b11-7f784dd0d10a" />
+<img width="1693" height="924" alt="image" src="https://github.com/user-attachments/assets/ff2b8e5d-ea13-4b12-b74b-165459fe0818" />
 
 ## 功能特色
 
